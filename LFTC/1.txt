@@ -1,0 +1,21 @@
+VAR {
+	Integer x, y;
+	Integer sum, localSum;
+}
+START {
+	x = read(“x = ”);
+	y = read(“y = ”);
+	sum = makeSum();
+	printResult();
+}
+
+function Integer makeSum() {
+	localSum = x + y;
+	return localSum;
+}
+
+procedure printResult(){
+    print(“Result is: ” + sum + “\n”);
+    finish = “Program finished”;
+    print (finish);
+}
