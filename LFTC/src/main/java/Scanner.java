@@ -1,102 +1,79 @@
 import javafx.util.Pair;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.List;
 
 public class Scanner {
+    private Integer lastIdentifierPos = 0;
+    private Integer lastConstantPos = 0;
     private File file;
-    private File outputFile;
     private File tableFile;
-    private File symbolTableFile;
-    private HashMap<String, Pair<Integer, Integer>> table = new HashMap<>();
-    private HashMap<String, Integer> symbolTable = new HashMap<>();
-    private HashMap<String, Integer> initialTable = new HashMap<>();
+    private File identifiersTableFile;
+    private File constantsTableFile;
+    private List<HashMap<String, Pair<Integer, Integer>>> PIF = new ArrayList<>();
+    private List<HashMap<String, Integer>> identifiersTable = new ArrayList<>();
+    private List<HashMap<String, Integer>> constantsTable = new ArrayList<>();
+    private HashMap<String, Integer> tableTxt = new HashMap<>();
 
     Scanner(String fileName) {
         try {
             file = new File(fileName);
-            outputFile = new File(fileName.replace(".txt", "") + "Output.txt");
-            tableFile = new File(fileName.replace(".txt", "") + "Table.txt");
-            symbolTableFile = new File(fileName.replace(".txt", "") + "SymbolTable.txt");
+            tableFile = new File("Table.txt");
+            identifiersTableFile = new File("IdentifiersTable.txt");
+            constantsTableFile = new File("ConstantsTable.txt");
             tableFile.createNewFile();
-            symbolTableFile.createNewFile();
+            identifiersTableFile.createNewFile();
+            constantsTableFile.createNewFile();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         populateTable();
     }
 
-    public void populateTable() {
+    private void populateTable() {
         try {
-            BufferedReader br = new BufferedReader(new FileReader("table.txt"));
+            BufferedReader br = new BufferedReader(new FileReader(new File("InitialTable.txt")));
             String line = br.readLine();
             while (line != null) {
                 String[] pair = line.split(" ");
-                Integer value = Integer.valueOf(pair[1]);
-                initialTable.put(pair[0], value);
+                tableTxt.put(pair[0], Integer.valueOf(pair[1]));
                 line = br.readLine();
             }
         } catch (IOException e) {
-            System.out.println("File error !");
+            System.out.println("File error!");
         }
     }
 
-    public void tokenize() {
+    void tokenize() {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
-            int lineNr = 0;
-            String id = "";
-            boolean ok = true;
             while (line != null) {
-                lineNr++;
-                int len = line.length();
-                int i = 0;
-                //we add chars to the current identfier as long as the current char is a letter
-                while (i < len) {
-                    if (line.charAt(i) == ' ' && !id.equals("")) {
-                        ok = addToken(id);
-                        if (ok == false) {
-                            System.out.println("Syntax error at line " + lineNr + " and column " + i);
-                        }
-                        id = "";
-                        i++;
-                        continue;
+                String[] lineSplit = line.split(" ");
+                for (Integer pos = 0; pos < lineSplit.length; pos++) {
+                    String element = lineSplit[pos].replaceAll("'|,|\"|;|[ ]+|[(]|[)]|[{]|[}]|\t|\n|\r", "");
+                    Integer nature = checkElementNature(element);
+                    HashMap<String, Pair<Integer, Integer>> firstMap = new HashMap<>();
+                    HashMap<String, Integer> map = new HashMap<>();
+                    if (nature == -1) {
+                        Integer elementPos = tableTxt.get(element);
+                        firstMap.put(element, new Pair<>(elementPos, nature));
+                        PIF.add(firstMap);
+                    } else if (nature == 1) {
+                        map.put(element, lastConstantPos);
+                        constantsTable.add(map);
+                        firstMap.put(element, new Pair<>(lastConstantPos, nature));
+                        PIF.add(firstMap);
+                        lastConstantPos++;
+                    } else if (nature == 0 && element.length() <= 8) {
+                        map.put(element, lastIdentifierPos);
+                        identifiersTable.add(map);
+                        firstMap.put(element, new Pair<>(lastIdentifierPos, nature));
+                        PIF.add(firstMap);
+                        lastIdentifierPos++;
                     }
-                    if (i > 0) {
-                        if ((line.charAt(i - 1) == '>' ||
-                                line.charAt(i - 1) == '=' ||
-                                line.charAt(i - 1) == '!' ||
-                                line.charAt(i - 1) == '<') && line.charAt(i) == '=') {
-                            ok = addToken(line.charAt(i - 1) + "=");
-                            id = "";
-                            if (ok == false) {
-                                System.out.println("Syntax error at line " + lineNr + " and column " + i);
-                            }
-                            i++;
-                            continue;
-                        }
-                    }
-                    if (new String("{};()+-*/*").contains(String.valueOf(line.charAt(i))) || line.charAt(i) == '\n') {
-                        ok = addToken(String.valueOf(line.charAt(i)));
-                        if (ok == false) {
-                            System.out.println("Syntax error at line " + lineNr + " and column " + i);
-                            i++;
-                            continue;
-                        }
-                        ok = addToken(id);
-
-                        if (ok == false) {
-                            System.out.println("Syntax error at line " + lineNr + " and column " + i);
-                        }
-                        id = "";
-                        i++;
-                        continue;
-                    }
-                    if (line.charAt(i) != ' ') id += String.valueOf(line.charAt(i));
-                    i++;
                 }
                 line = br.readLine();
             }
@@ -108,79 +85,47 @@ public class Scanner {
         }
     }
 
-    public boolean isChar(char x) {
-        return ((x >= 'a' && x <= 'z') || (x >= 'A' && x <= 'Z'));
-    }
-
-    public boolean isDigit(char c) {
-        return (c >= '0' && c <= '9');
-    }
-
-    public boolean addToken(String token) {
-        if (initialTable.containsKey(token)) {
-            table.put(token, new Pair(initialTable.get(token), -1));
-            return true;
-        } else {
-            return addIdentifierOrConstant(token);
-        }
-    }
-
-    private int addSymbol(String token) {
-        if (symbolTable.containsKey(token)) {
-            return symbolTable.get(token);
-        } else {
-            symbolTable.put(token, symbolTable.size() + 1);
+    private Integer checkElementNature(String element) {
+        if (tableTxt.containsKey(element))
             return -1;
-        }
-    }
-
-    private boolean addIdentifierOrConstant(String token) {
-        int ok = checkToken(token);
-        if (ok == -1) return false;
-        if (symbolTable.containsKey(token)) {
-            table.put(token, new Pair(ok, symbolTable.get(token)));
-        } else {
-            symbolTable.put(token, symbolTable.size() + 1);
-            table.put(token, new Pair(ok, symbolTable.get(token)));
-        }
-        return true;
-    }
-
-    private int randNotTaken(HashMap<String, Integer> table) {
-        int r = ThreadLocalRandom.current().nextInt(1, 10000);
-        while (table.containsValue(r)) {
-            r = ThreadLocalRandom.current().nextInt(1, 10000);
-        }
-        return r;
+        else if (element.matches("[a-zA-Z_]+"))
+            return 0;
+        else if (element.matches("[0-9]+"))
+            return 1;
+        return -2;
     }
 
     private void writeTables() {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(symbolTableFile, true));
-            for (Map.Entry<String, Integer> e : symbolTable.entrySet()) {
-                String key = e.getKey();
-                int value = e.getValue();
-                writer.write(key + " " + value);
-                writer.newLine();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(identifiersTableFile, false));
+            for (Integer i = 0; i < identifiersTable.size(); i++) {
+                HashMap<String, Integer> map = identifiersTable.get(i);
+                String key = map.entrySet().iterator().next().getKey();
+                Integer value = map.entrySet().iterator().next().getValue();
+                writer.write(key + " " + value + "\n");
             }
-            BufferedWriter writer1 = new BufferedWriter(new FileWriter(tableFile, true));
-            for (Map.Entry<String, Pair<Integer, Integer>> e : table.entrySet()) {
-                String key = e.getKey();
-                Pair<Integer, Integer> value = e.getValue();
+
+            BufferedWriter writer2 = new BufferedWriter(new FileWriter(constantsTableFile, false));
+            for (Integer i = 0; i < constantsTable.size(); i++) {
+                HashMap<String, Integer> map = constantsTable.get(i);
+                String key = map.entrySet().iterator().next().getKey();
+                Integer value = map.entrySet().iterator().next().getValue();
+                writer2.write(key + " " + value + "\n");
+            }
+
+            BufferedWriter writer1 = new BufferedWriter(new FileWriter(tableFile, false));
+            for (Integer i = 0; i < PIF.size(); i++) {
+                HashMap<String, Pair<Integer, Integer>> map = PIF.get(i);
+                String key = map.entrySet().iterator().next().getKey();
+                Pair<Integer, Integer> value = map.entrySet().iterator().next().getValue();
                 writer1.write(key + " " + value.getKey() + " " + value.getValue() + "\n");
-                writer1.newLine();
             }
+
             writer.close();
             writer1.close();
+            writer2.close();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    public int checkToken(String token) {
-        if (token.length() > 8) return -1;
-        if (token.matches("^[0-9]*.[0-9].$")) return 1;
-        if (token.matches("^[a-zA-Z_$][a-zA-Z_$]*$")) return 0;
-        return -1;
     }
 }
