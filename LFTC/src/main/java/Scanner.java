@@ -50,8 +50,21 @@ public class Scanner {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
             while (line != null) {
+                if (line.contains("}") && line.length() > 1) {
+                    System.out.println("Syntax error at line number " + lineNumber);
+                    break;
+                }
+                if (line.contains("VAR") && line.charAt(line.length() - 1) != '{') {
+                    System.out.println("Syntax error at line number " + lineNumber);
+                    break;
+                }
                 if (line.charAt(line.length() - 1) != ';' &&
                         !(line.contains("{") || line.contains("}") || line.contains("(") || line.contains(")"))) {
+                    System.out.println("Syntax error at line number " + lineNumber);
+                    break;
+                }
+                if ((line.contains("if") || line.contains("while") || line.contains("for")) &&
+                        line.charAt(line.length() - 1) != ')') {
                     System.out.println("Syntax error at line number " + lineNumber);
                     break;
                 }
