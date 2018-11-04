@@ -1,25 +1,14 @@
 VAR {
-    Integer x, y ;
+    Integer x, y;
     Integer sum, localSum;
 }
 START {
-    x = read ( “ x = ” );
-    y = read ( “ y = ” );
+    read x;
+    read y;
     x = x + 3;
     y = y + 10;
-    if ( x >= 10 )
-        print ( " x is grater than 10 " );
-    sum = makeSum();
-    prtRes();
-}
-
-function Integer makeSum() {
-    localSum = x + y;
-    return localSum;
-}
-
-procedure prtRes(){
-    print ( “ Result is: ” + sum + “ \n ” );
-    finish = “ Program finished ”;
-    print (finish);
+    if (x >= 10)
+        print z;
+    sum = x + y;
+    print sum;
 }
