@@ -1,5 +1,5 @@
 VAR {
-    Integer x, y;
+    Integer x, y, i;
     Integer sum, localSum;
 }
 START {
@@ -7,8 +7,12 @@ START {
     read y;
     x = x + 3;
     y = y + 10;
-    if (x >= 10)
+    if (x <= 10)
         print z;
+    while (y != 30)
+        y = y + 1;
+    for (i = 0; i <= 10; i = i + 1)
+        print i;
     sum = x + y;
     print sum;
 }

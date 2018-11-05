@@ -50,6 +50,10 @@ public class Scanner {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String line = br.readLine();
             while (line != null) {
+                if (!checkLineContainsIfWhileForStmt(line)) {
+                    System.out.println("Syntax error at line number " + lineNumber);
+                    break;
+                }
                 if (line.contains("}") && line.length() > 1) {
                     System.out.println("Syntax error at line number " + lineNumber);
                     break;
@@ -207,6 +211,90 @@ public class Scanner {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private boolean checkLineContainsIfWhileForStmt(String line) {
+        if (line.contains("if")) {
+            if (!(line.contains("(") && line.contains(")")))
+                return false;
+            Integer first = line.indexOf("(");
+            Integer second = line.indexOf(")");
+            String element = line.substring(first + 1, second);
+            element = element.trim();
+            element = element.replaceAll("( )+", " ");
+            String[] list = element.split(" ");
+            if (!list[2].matches("[0-9]+"))
+                if (!identifiersTable.containsKey(list[2]))
+                    return false;
+            if (!identifiersTable.containsKey(list[0]))
+                return false;
+            if (list.length != 3 || !(list[1].equals("<") || list[1].equals("<=") || list[1].equals("==") ||
+                    list[1].equals("!=") || list[1].equals(">") || list[1].equals(">=")))
+                return false;
+
+        } else if (line.contains("while")) {
+            if (!(line.contains("(") && line.contains(")")))
+                return false;
+            Integer first = line.indexOf("(");
+            Integer second = line.indexOf(")");
+            String element = line.substring(first + 1, second);
+            element = element.trim();
+            element = element.replaceAll("( )+", " ");
+            String[] list = element.split(" ");
+            if (!list[2].matches("[0-9]+"))
+                if (!identifiersTable.containsKey(list[2]))
+                    return false;
+            if (!identifiersTable.containsKey(list[0]))
+                return false;
+            if (list.length != 3 || !(list[1].equals("<") || list[1].equals("<=") || list[1].equals("==") ||
+                    list[1].equals("!=") || list[1].equals(">") || list[1].equals(">=")))
+                return false;
+
+        } else if (line.contains("for")) {
+            if (!(line.contains("(") && line.contains(")")))
+                return false;
+            Integer first = line.indexOf("(");
+            Integer second = line.indexOf(")");
+            String element = line.substring(first + 1, second);
+            element = element.trim();
+            element = element.replaceAll("( )+", " ");
+            String[] list = element.split(";");
+            if (list.length != 3)
+                return false;
+            String[] param1 = list[0].trim().split(" ");
+            String[] param2 = list[1].trim().split(" ");
+            String[] param3 = list[2].trim().split(" ");
+            if (!identifiersTable.containsKey(param1[0]))
+                return false;
+            if (param1.length != 3)
+                return false;
+            if (!param1[1].equals("="))
+                return false;
+            if (!param1[2].matches("[0-9]+"))
+                if (!identifiersTable.containsKey(param1[2]))
+                    return false;
+            if (param2.length != 3)
+                return false;
+            if (!param2[0].equals(param1[0]))
+                return false;
+            if(!(param2[1].equals("<") || param2[1].equals("<=") || param2[1].equals(">") || param2[1].equals(">=")))
+                return false;
+            if (!param2[2].matches("[0-9]+"))
+                if (!identifiersTable.containsKey(param2[2]))
+                    return false;
+            if (param3.length != 5)
+                return false;
+            if (!param3[0].equals(param1[0]) || !param3[2].equals(param1[0]))
+                return false;
+            if (!param3[1].equals("="))
+                return false;
+            if (!(param3[3].equals("+") && !param3[3].equals("-")))
+                return false;
+            if (!param3[4].matches("[0-9]+"))
+                if (!identifiersTable.containsKey(param3[4]))
+                    return false;
+        }
+        return true;
     }
 
     private String checkExtraCharsExistence(String element) {

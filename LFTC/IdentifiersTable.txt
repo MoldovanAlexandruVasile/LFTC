@@ -1,5 +1,6 @@
 'x' 0
 'y' 1
-'sum' 2
-'z' 4
-'localSum' 3
+'i' 2
+'sum' 3
+'z' 5
+'localSum' 4
