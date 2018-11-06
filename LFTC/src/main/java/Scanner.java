@@ -149,11 +149,12 @@ public class Scanner {
                 returnList.add(element);
             else return new ArrayList<>();
         } else if (!extraChar.equals("")) {
+            //System.out.println(element);
             String[] lists = element.split(extraChar);
             Integer extraToBeAdded = lists.length - 1;
             for (Integer elem = 0; elem < lists.length; elem++) {
                 returnList.add(lists[elem]);
-                if (extraToBeAdded != 0) {
+                if (extraToBeAdded >= 0) {
                     returnList.add(extraChar);
                     extraToBeAdded--;
                 }

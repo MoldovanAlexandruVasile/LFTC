@@ -5,7 +5,7 @@ VAR {
 START {
     read x;
     read y;
-    x = x + 3;
+    x = x + 3 + 1;
     y = y + 10;
     if (x <= 10)
         print z;
