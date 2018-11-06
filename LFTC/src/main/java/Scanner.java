@@ -132,8 +132,14 @@ public class Scanner {
     }
 
     private List<String> getElementsToBeAdded(String element) {
-        String extraChar = checkExtraCharsExistence(element);
         List<String> returnList = new ArrayList<>();
+        if (String.valueOf(element.charAt(element.length() - 1)).equals(")")) {
+            element = element.replaceAll("\\)", "");
+            returnList.add(element);
+            returnList.add(")");
+            return returnList;
+        }
+        String extraChar = checkExtraCharsExistence(element);
         if (!extraChar.equals("") && String.valueOf(element.charAt(0)).equals(extraChar)) {
             returnList.add(extraChar);
             element = element.replaceAll(extraChar, "");
@@ -142,12 +148,6 @@ public class Scanner {
             if (tableTxt.containsKey(element))
                 returnList.add(element);
             else return new ArrayList<>();
-        } else if (!extraChar.equals("") && String.valueOf(element.length() - 1).equals(extraChar)) {
-            element = element.replaceAll(extraChar, "");
-            if (tableTxt.containsKey(element)) {
-                returnList.add(element);
-                returnList.add(extraChar);
-            } else return new ArrayList<>();
         } else if (!extraChar.equals("")) {
             String[] lists = element.split(extraChar);
             Integer extraToBeAdded = lists.length - 1;
