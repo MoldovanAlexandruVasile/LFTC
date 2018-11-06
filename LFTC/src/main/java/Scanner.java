@@ -101,6 +101,8 @@ public class Scanner {
         if (!element.equals("")) {
             if (element.equals("\\("))
                 element = String.valueOf('(');
+            else if (element.equals("\\)"))
+                element = String.valueOf(')');
             Integer nature = checkElementNature(element);
             Integer elementP;
             HashMap<String, Pair<Integer, Integer>> firstMap = new HashMap<>();
@@ -151,8 +153,10 @@ public class Scanner {
             Integer extraToBeAdded = lists.length - 1;
             for (Integer elem = 0; elem < lists.length; elem++) {
                 returnList.add(lists[elem]);
-                if (extraToBeAdded != 0)
+                if (extraToBeAdded != 0) {
                     returnList.add(extraChar);
+                    extraToBeAdded--;
+                }
             }
         } else if (extraChar.equals("")) {
             returnList.add(element);
@@ -277,7 +281,7 @@ public class Scanner {
                 return false;
             if (!param2[0].equals(param1[0]))
                 return false;
-            if(!(param2[1].equals("<") || param2[1].equals("<=") || param2[1].equals(">") || param2[1].equals(">=")))
+            if (!(param2[1].equals("<") || param2[1].equals("<=") || param2[1].equals(">") || param2[1].equals(">=")))
                 return false;
             if (!param2[2].matches("[0-9]+"))
                 if (!identifiersTable.containsKey(param2[2]))
@@ -310,7 +314,7 @@ public class Scanner {
             return "!=";
         else if (element.contains("&&"))
             return "&&";
-        else if (element.contains("("))
+        else if (element.contains(String.valueOf('(')))
             return "\\(";
         else if (element.contains(")"))
             return "\\)";
