@@ -1,0 +1,50 @@
+<PROGRAM>		::= "VAR {" <DECLARATION> "} START {" <CMPDSTMT> "}"
+<DECLLIST> 		::= <DECLARATION> | <DECLARATION> ";" <DECLLIST>
+<DECLARATION> 	::= <TYPE> <IDENTIFIER> {<IDENTIFIER>};
+<TYPE> 			::= "Boolean" | "Character" | "Integer" | "String"
+<CMPDSTMT> 		:: = "{" <STMTLIST> "}"
+<STMTLIST> 		::= <STMT> | <STMT> "{" <STMT> "}"
+<IFSTMT> 		::= "IF (" <CONDITION> "){" <stmt> "}" ["ELSE" (<STMT>)]
+<WHILESTMT> 	::= "WHILE (" <CONDITION> "){" <STMT> "}"
+<ASSIGNSTMT> 	::= <IDENTIFIER> "=" <EXPRESSION> ";"
+<STMT> 			::= <ASSIGNSTMT> | <IOSTMT> | <WHILESTMT> | <IFSTMT> | <CMPDSTMT>
+<IDENTIFIER> 	::= (LETTER | DIGIT) [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)]
+<CONDITION> 	::= <EXPRESSION> RELATION <EXPRESSION>
+<EXPRESSION> 	::= <EXPRESSION> <OPERATOR> <TERM> | <TERM>
+<TERM> 			::= <TERM> <OPERATOR> <FACTOR> | <FACTOR>
+<FACTOR> 		::= "(" <EXPRESSION> ")" | <IDENTIFIER>
+<OPERATOR> 		::= "+" | "*" | "/" | "-" | "&&" | "||"
+<RELATION> 		::= "=" | "<" | "<=" | ">" | ">=" | "!=" | "=="
+<IOSTMT> 		::= "read" | "print"
+<LETTER> 		::= "a" | .. | "z" | "A" | .. | "Z"
+<DIGIT> 		::= "0" | .. | "9" 
+
+
+Grammar :
+- Productions:
+	- Nonterminals = {PROGRAM, DECLLIST, DECLARATION, TYPE, CMPDSTMT, IDENTIFIER, LETTER, DIGIT, STMTLIST, STMT, IOSTMT, IFSTMT, WHILESTMT, CONDITION, EXPRESSION, TERM, FACTOR, OPERATOR, RELATION, ASSIGNSTMT}
+
+	- Terminals = {VAR, START, Integer, Boolean, Character, String, a, b, ..., z, A, B, ..., Z, 0, ..., 9, -, ! ,!= ,&& , (, ), *, \, , /, ;, {, ||, }, ", +, <, <=, =, ==, >, >=, print, read, if, else, while, for}
+
+- Starting symbol: VAR
+
+PROGRAM 	-> VAR "{" DECLARATION "}" START "{" CMPDSTMT "}"
+DECLLIST 	-> DECLARATION | DECLARATION ";" DECLLIST
+DECLARATION -> <TYPE> <IDENTIFIER>;
+TYPE		-> Boolean | Character | Integer | String
+CMPDSTMT 	-> "{" STMTLIST "}"
+STMTLIST 	-> STMT | STMT "{" STMT "}"
+IFSTMT		-> "IF (" CONDITION "){" stmt "}" | "IF (" CONDITION "){" STMT "} ELSE (" STMT ")"
+WHILESTMT 	-> "WHILE (" <CONDITION> "){" <STMT> "}"
+ASSIGNSTMT 	-> IDENTIFIER "=" EXPRESSION ";"
+STMT 		-> ASSIGNSTMT | IOSTMT | WHILESTMT | IFSTMT | CMPDSTMT
+IDENTIFIER 	-> LETTER | DIGIT | LETTER IDENTIFIER | DIGIT IDENTIFIER
+CONDITION 	-> EXPRESSION RELATION EXPRESSION
+EXPRESSION 	-> EXPRESSION OPERATOR TERM | TERM
+TERM 		-> TERM OPERATOR FACTOR | FACTOR
+FACTOR 		-> "(" EXPRESSION ")" | IDENTIFIER
+OPERATOR	-> + | * | / | - | && | ||
+RELATION 	-> = | < | <= | > | >= | != | ==
+IOSTMT 		-> read | print
+LETTER		-> a | ... | z | A | ... | Z
+DIGIT 		-> 0 | ... | 9
