@@ -22,53 +22,59 @@ public class Main {
             if (option == 1) {
                 initGrammar();
                 productions = readGrammarFromFile();
-            }
-            if (option == 2) {
+            } else if (option == 2) {
                 initGrammar();
                 productions = readGrammarFromKeyboard();
-            }
-            if (option == 3) {
+            } else if (option == 3) {
                 printList("G");
                 printList("NTerminals");
                 printList("ETerminals");
                 System.out.println("\t\t\tStarting symbol: " + startingSymbol);
                 printTerminals(productions);
-            }
-            if (option == 4) {
+            } else if (option == 4) {
                 Boolean isReg;
                 isReg = verifyGrammar(productions);
                 if (isReg)
                     System.out.println("\t\t\tIt is a regular grammar.");
                 else
                     System.out.println("\t\t\tIt is not regular grammar.");
-            }
-            if (option == 5) {
+            } else if (option == 5) {
                 transitions = readAutomatonFromFile();
-            }
-            if (option == 6) {
+            } else if (option == 6) {
                 printList("QStates");
                 printList("ESymbols");
                 printList("F");
                 printList("initialState");
                 printTransitions();
-            }
-            if (option == 7) {
+            } else if (option == 7) {
                 grammarToAutomaton(productions);
                 printList("QStates");
                 printList("ESymbols");
                 printList("F");
                 System.out.println("\t\t\tInitial state: " + initialState);
                 printTransitions();
-            }
-            if (option == 8) {
+            } else if (option == 8) {
                 initGrammar();
                 HashMap<String[], List<String>> newMap = automatonToGrammar(transitions);
                 printList("NTerminals");
                 printList("ETerminals");
                 System.out.println("\t\t\tStarting symbol: " + startingSymbol);
                 printTerminalsV2(newMap);
-            }
-            if (option == 0) {
+            } else if (option == 9) {
+                String nonterm = readNonTerminal();
+                nonterm = nonterm.toUpperCase();
+                if (productions.containsKey(nonterm)) {
+                    Iterator it = productions.entrySet().iterator();
+                    Map.Entry pair = (Map.Entry) it.next();
+                    List<String> values = (List) pair.getValue();
+                    String elems = "";
+                    for (Integer i = 0; i < values.size() - 1; i++) {
+                        elems += values.get(i) + " | ";
+                    }
+                    System.out.println("\n\t\t\t"+nonterm + " -> " + elems + values.get(values.size() - 1));
+                } else
+                    System.out.println("\n\t\t\tNo such non terminal");
+            } else if (option == 0) {
                 break;
             }
         }
@@ -202,7 +208,7 @@ public class Main {
                         List<String> key = new ArrayList<>();
                         key.add(grammarPair.getKey().toString());
                         key.add(Character.toString(grammarPairList.get(i).charAt(0)));
-                        transitions.put(key, "K");
+                        transitions.put(key, "E");
                     }
                 }
             } else {
@@ -217,7 +223,7 @@ public class Main {
                         List<String> key = new ArrayList<>();
                         key.add(grammarPair.getKey().toString());
                         key.add(grammarPairList.get(0));
-                        transitions.put(key, "K");
+                        transitions.put(key, "E");
                     }
                 }
             }
@@ -401,6 +407,13 @@ public class Main {
         return opt;
     }
 
+    private static String readNonTerminal() {
+        System.out.print("\n\t\t\tNon terminal: ");
+        Scanner scanner = new Scanner(System.in);
+        String opt = scanner.nextLine();
+        return opt;
+    }
+
     private static void printMenu() {
         System.out.print("\n\t\t1. Read grammar from file.");
         System.out.print("\n\t\t2. Read grammar from keyboard.");
@@ -410,6 +423,7 @@ public class Main {
         System.out.print("\n\t\t6. Display automaton.");
         System.out.print("\n\t\t7. Grammar to Automaton.");
         System.out.print("\n\t\t8. Automaton to Grammar.");
+        System.out.print("\n\t\t9. Search by a non terminal.");
         System.out.println("\n\t\t0. Exit.");
     }
 
