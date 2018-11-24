@@ -1,24 +1,23 @@
-<PROGRAM>		::= "VAR {" <DECLARATION> "} START {" <CMPDSTMT> "}"
-<DECLLIST> 		::= <DECLARATION> | <DECLARATION> ";" <DECLLIST>
+<PROGRAM>	::= "VAR {" <DECLARATION> "} START {" <CMPDSTMT> "}"
+<DECLLIST> 	::= <DECLARATION> | <DECLARATION> ";" <DECLLIST>
 <DECLARATION> 	::= <TYPE> <IDENTIFIER> {<IDENTIFIER>};
-<TYPE> 			::= "Boolean" | "Character" | "Integer" | "String"
-<CMPDSTMT> 		:: = "{" <STMTLIST> "}"
-<STMTLIST> 		::= <STMT> | <STMT> "{" <STMT> "}"
-<IFSTMT> 		::= "IF (" <CONDITION> "){" <stmt> "}" ["ELSE" (<STMT>)]
+<TYPE> 		::= "Boolean" | "Character" | "Integer" | "String"
+<CMPDSTMT> 	:: = "{" <STMTLIST> "}"
+<STMTLIST> 	::= <STMT> | <STMT> "{" <STMT> "}"
+<IFSTMT> 	::= "IF (" <CONDITION> "){" <stmt> "}" ["ELSE" (<STMT>)]
 <WHILESTMT> 	::= "WHILE (" <CONDITION> "){" <STMT> "}"
 <ASSIGNSTMT> 	::= <IDENTIFIER> "=" <EXPRESSION> ";"
-<STMT> 			::= <ASSIGNSTMT> | <IOSTMT> | <WHILESTMT> | <IFSTMT> | <CMPDSTMT>
+<STMT> 		::= <ASSIGNSTMT> | <IOSTMT> | <WHILESTMT> | <IFSTMT> | <CMPDSTMT>
 <IDENTIFIER> 	::= (LETTER | DIGIT) [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)] [(LETTER | DIGIT)]
 <CONDITION> 	::= <EXPRESSION> RELATION <EXPRESSION>
 <EXPRESSION> 	::= <EXPRESSION> <OPERATOR> <TERM> | <TERM>
-<TERM> 			::= <TERM> <OPERATOR> <FACTOR> | <FACTOR>
-<FACTOR> 		::= "(" <EXPRESSION> ")" | <IDENTIFIER>
-<OPERATOR> 		::= "+" | "*" | "/" | "-" | "&&" | "||"
-<RELATION> 		::= "=" | "<" | "<=" | ">" | ">=" | "!=" | "=="
-<IOSTMT> 		::= "read" | "print"
-<LETTER> 		::= "a" | .. | "z" | "A" | .. | "Z"
-<DIGIT> 		::= "0" | .. | "9" 
-
+<TERM> 		::= <TERM> <OPERATOR> <FACTOR> | <FACTOR>
+<FACTOR> 	::= "(" <EXPRESSION> ")" | <IDENTIFIER>
+<OPERATOR> 	::= "+" | "*" | "/" | "-" | "&&" | "||"
+<RELATION> 	::= "=" | "<" | "<=" | ">" | ">=" | "!=" | "=="
+<IOSTMT> 	::= "read" | "print"
+<LETTER> 	::= "a" | .. | "z" | "A" | .. | "Z"
+<DIGIT> 	::= "0" | .. | "9" 
 
 Grammar :
 - Productions:
