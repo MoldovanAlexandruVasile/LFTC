@@ -1,0 +1,8 @@
+G = {N, E, P, S}
+N = {A, B}
+E = {a, b, c}
+A
+A -> a
+A -> cB
+A -> E
+B -> c
