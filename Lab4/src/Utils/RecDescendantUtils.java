@@ -2,13 +2,42 @@ package Utils;
 
 import java.util.*;
 
+import static Utils.GrammarUtils.*;
+
 public class RecDescendantUtils {
 
-    public static List<Character> states = new ArrayList<>();
-    public static Character currentState;
+    public static List<String> states = new ArrayList<>();
+    public static String currentState;
     public static Integer i = 1;
     public static Stack<String> alpha = new Stack<>();
     public static Stack<String> beta = new Stack<>();
+
+    public static void run() {
+        while (beta.empty() && (i == beta.size() + 1)) {
+            if (currentState.equals("q")) {
+                if (beta.empty() && i == beta.size() + 1)
+                    currentState = "f";
+                else {
+                    String betaTop = beta.peek();
+                    if (NTerminals.contains(betaTop)) {
+                        alpha.push(betaTop);
+                        beta.pop();
+                        beta.push(productions.get(betaTop).get(0));
+                    } else if (ETerminals.contains(betaTop)) {
+                        i++;
+                        alpha.push(betaTop);
+                        beta.pop();
+                    } else currentState = "r";
+                }
+            } else if (currentState.equals("r")) {
+
+            } else if (currentState.equals("e")) {
+                System.out.println("\n\t\tERROR !");
+            } else {
+                System.out.println("\n\t\tThe sequence is accepted !");
+            }
+        }
+    }
 
     public static void initRecDescendant(HashMap<String, List<String>> productions) {
         initStates();
@@ -28,11 +57,11 @@ public class RecDescendantUtils {
     }
 
     private static void initStates() {
-        currentState = 'q';
-        states.add('q');
-        states.add('b');
-        states.add('f');
-        states.add('e');
+        currentState = "q";
+        states.add("q");
+        states.add("b");
+        states.add("f");
+        states.add("e");
     }
 
     private static void populateBeta(HashMap<String, List<String>> productions) {

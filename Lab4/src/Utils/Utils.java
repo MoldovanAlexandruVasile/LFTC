@@ -8,7 +8,7 @@ public class Utils {
         System.out.print("\n\t\t1. Read grammar from file.");
         System.out.print("\n\t\t2. Read grammar from keyboard.");
         System.out.print("\n\t\t3. Print grammar.");
-        System.out.print("\n\t\t4. Print all the stuff of Recursive Descendant.");
+        System.out.print("\n\t\t4. Print initial configuration.");
         System.out.println("\n\t\t0. Exit.");
     }
 
