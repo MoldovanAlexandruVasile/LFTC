@@ -1,11 +1,11 @@
 import static Utils.GrammarUtils.*;
 import static Utils.RecDescendantUtils.*;
-import static Utils.Utils.printMenu;
-import static Utils.Utils.readOption;
+import static Utils.Utils.*;
 
 public class Main {
-
     public static void main(String[] args) {
+        input = readInput();
+        System.out.println();
         System.out.println("\n\t\t\t~MENU~");
         while (true) {
             printMenu();
@@ -28,6 +28,9 @@ public class Main {
             } else if (option == 4) {
                 System.out.println();
                 printAllData();
+            } else if (option == 5) {
+                initRecDescendant(productions);
+                run();
             } else if (option == 0) {
                 break;
             }
