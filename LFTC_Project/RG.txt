@@ -1,0 +1,7 @@
+S
+a,b,c
+S
+aacbc
+S:aSbS
+S:aS
+S:c

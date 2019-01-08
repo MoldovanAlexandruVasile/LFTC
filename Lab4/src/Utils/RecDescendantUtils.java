@@ -6,6 +6,7 @@ import static Utils.GrammarUtils.NTerminals;
 import static Utils.GrammarUtils.productions;
 
 public class RecDescendantUtils {
+
     public static String input;
     public static String currentState = "q";
     public static Integer i = 1;
